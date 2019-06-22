@@ -65,7 +65,6 @@ router.patch('/users/:id', async (ctx) => {
 
 router.post('/users', async (ctx) => {
   const {email, displayName} = await ctx.request.body;
-  console.log(email, displayName);
   try {
     ctx.body = await User.create({email: email, displayName: displayName});
   } catch ({errors}) {
@@ -76,16 +75,16 @@ router.post('/users', async (ctx) => {
 });
 
 router.delete('/users/:id', async (ctx) => {
-  const {id} = ctx.params;
   try {
-    const {deletedCount} = await User.remove({_id: id});
-    ctx.status = 200;
+    const {id} = ctx.params;
+    const {deletedCount} = await User.deleteOne({_id: id});
     if (deletedCount === 0) {
-      console.log(123);
       ctx.status = 404;
-    } else {}
+    } else {
+      ctx.status = 200;
+    }
   } catch (e) {
-    ctx.status = 404;
+    ctx.status = 500;
   }
 });
 
